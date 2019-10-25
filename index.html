@@ -14,7 +14,9 @@
             <h1>QR Code Generator</h1>
         </header>
         <section class="generate">
-            <input type="text" id="user-content" placeholder="Input your text here...">
+            <div>
+                <input type="text" id="user-content" placeholder="Input your text here..."><input type="button" id="user-click" value="Generate">
+            </div>
             <div id="qrcode-placeholder">Your generated QR Code will be displayed here</div>
             <div id="qrcode-container"></div>
         </section>
@@ -31,6 +33,7 @@
     <script src="https://cdn.jsdelivr.net/gh/telegram-sms/qrcodejs/qrcode.min.js"></script>
     <script>
         const userContent = document.getElementById('user-content');
+        const userClick = document.getElementById('user-click');
         const userPH = document.getElementById('qrcode-placeholder');
         const userCT = document.getElementById('qrcode-container');
         const qrcode = new QRCode(document.getElementById('qrcode-container'), {
@@ -39,7 +42,7 @@
             colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H,
         });
-        userContent.addEventListener('input', () => {
+        userClick.addEventListener('click', () => {
             userCT.style.display = 'block';
             userPH.style.display = 'none';
             qrcode.clear();
