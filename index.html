@@ -6,7 +6,82 @@
     <title>QR Code Generator</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sukka/markdown.css@0.1.5/dist/markdown.min.css">
-    <link rel="stylesheet" href="assets/style.css">
+    <style type="text/css">
+body {
+    margin: 1em;
+    background-color: #b9e0e5;
+    background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 268 268' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.4' fill-rule='evenodd'%3E%3Ccircle cx='37' cy='37' r='36'/%3E%3Ccircle cx='171' cy='171' r='36'/%3E%3C/g%3E%3C/svg%3E");
+    background-attachment: fixed;
+    font-family: "lucida grande", "lucida sans unicode", "Helvetica Neue", Tahoma, "PingFang SC", "Hiragino Sans GB", "Source Han Sans CN Normal", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif
+}
+#file-receiver {
+    display: none
+}
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    border-radius: 1em;
+    box-sizing: border-box;
+    padding: 0 1em;
+    box-shadow: rgba(0, 0, 0, .12) .25em .25em 1em .25em;
+}
+.container > header {
+    text-align: center;
+    padding: 1.2em 0;
+    box-sizing: border-box;
+    border-bottom: 2px dashed #ddd;
+}
+.container > header > h1 {
+    margin: 0;
+    font-size: 1.7em;
+}
+.container > .generate {
+    padding: 1em 0;
+    border-bottom: 2px dashed #ddd;
+}
+.container > .generate > input[type=text] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: rgba(0, 0, 0, 0.07);
+    border: 0;
+    width: 100%;
+    font-size: 1em;
+    padding: 0.5em 0.6em;
+    box-sizing: border-box;
+    border-radius: 0.4em;
+    font-family: Consolas, Monaco, 'Courier New', Courier, monospace;
+    display: block;
+}
+.container > .generate > div#qrcode-placeholder {
+    margin-top: 1em;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.5);
+}
+.container > .generate > #qrcode-container {
+    position: relative;
+    height: 256px;
+    margin-top: 1em;
+    display: none;
+}
+.container > .generate > #qrcode-container > img, .container > .generate > #qrcode-container > canvas {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate3d(-50%, 0, 0);
+}
+.container > .info {
+    padding: 1em 0;
+}
+footer {
+    text-align: center;
+    padding: .5em;
+    font-size: .875em;
+    color: rgba(0, 0, 0, .4);
+}
+    </style>
 </head>
 <body>
     <div class="container">
@@ -15,17 +90,19 @@
         </header>
         <section class="generate">
             <div>
-                <input type="text" id="user-content" placeholder="Input your text here..."><input type="button" id="user-click" value="Generate">
+                <input type="text" id="user-content" placeholder="Input your Bot Token here..."><input type="button" id="user-click" value="Generate">
             </div>
             <div id="qrcode-placeholder">Your generated QR Code will be displayed here</div>
             <div id="qrcode-container"></div>
         </section>
         <section class="info">
             <div class="markdown-body">
-                <p>You can generate QR Code quickly from any text here.</p>
+                <p>This is a tool to help you generate a QR code with a Bot Token in your browser. You can use Telegram SMS to scan this QR code, which will allow you to quickly enter your Bot Token.</p>
                 <h2>Important Notice</h2>
                 <p>This tool is purely frontend-based, which won't upload any data into our server. You 
                     can get source code <a href="https://github.com/telegram-sms/qrcode.reall.uk" target="_blank">here</a>.</p>
+                <h2>Acknowledgements</h2>
+                <p><a href="https://davidshimjs.github.io/qrcodejs/" target="_blank">QRCode.js</a></p>
             </div>
         </section>
     </div>
