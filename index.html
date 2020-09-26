@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
     <title>QR Code Generator</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sukka/markdown.css@0.1.5/dist/markdown.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdui@1.0.0/dist/css/mdui.min.css">
     <style type="text/css">
 body {
     margin: 1em;
@@ -28,7 +27,8 @@ body {
 }
 .container > header {
     text-align: center;
-    padding: 1.2em 0;
+    padding: 1em 0;
+    line-height: 2.2em;
     box-sizing: border-box;
     border-bottom: 2px dashed #ddd;
 }
@@ -40,43 +40,33 @@ body {
     padding: 1em 0;
     border-bottom: 2px dashed #ddd;
 }
-.container > .generate input {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    border: 0;
-    font-size: 1em;
-    padding: 0.5em 0.6em;
-    box-sizing: border-box;
-    border-radius: 0.4em;
-    font-family: Consolas, Monaco, 'Courier New', Courier, monospace;
+
+.generate .mdui-textfield {
+    padding-top: 4px;
 }
-.container > .generate input[type=text] {
-    background-color: rgba(0, 0, 0, 0.07);
-    width: calc(100% - 7em);
+
+.generate .mdui-switch-icon {
+    margin-right: 0.75rem;
 }
-.container > .generate input[type=button] {
-    background-color: #9ccc65;
-    width: 6.5em;
-    margin-left: 0.5em;
+
+.generate .submit-btn-outer {
+    margin-top: 0.5rem;
 }
+
 .container > .generate > div#qrcode-placeholder {
     margin-top: 1em;
     text-align: center;
     color: rgba(0, 0, 0, 0.5);
 }
 .container > .generate > #qrcode-container {
-    position: relative;
-    height: 256px;
     margin-top: 1em;
     display: none;
+    text-align: center;
 }
-.container > .generate > #qrcode-container > img, .container > .generate > #qrcode-container > canvas {
-    display: block;
-    position: absolute;
-    left: 50%;
-    top: 0;
-    transform: translate3d(-50%, 0, 0);
+.container > .generate > #qrcode-container > canvas {
+    display: inline-block;
+    width: 100%;
+    max-width: 512px;
 }
 .container > .info {
     padding: 1em 0;
@@ -89,47 +79,109 @@ footer {
 }
     </style>
 </head>
-<body>
+<body class="mdui-theme-primary-teal mdui-theme-accent-deep-orange">
     <div class="container">
         <header>
-            <h1>QR Code Generator</h1>
+            <h1>Telegram SMS Config Generator</h1>
         </header>
         <section class="generate">
             <div>
-                <input type="text" id="user-content" placeholder="Paste your Bot Token here..."><input type="button" id="user-click" value="Generate">
+                <form id="qr-info">
+                    <div class="mdui-textfield">
+                        <label class="mdui-textfield-label">Bot Token</label>
+                        <input class="mdui-textfield-input" type="text" data-key="bot_token">
+                    </div>
+                    <div class="mdui-textfield">
+                        <label class="mdui-textfield-label">Chat ID</label>
+                        <input class="mdui-textfield-input" type="text" data-key="chat_id">
+                    </div>
+                    <div class="mdui-textfield">
+                        <label class="mdui-textfield-label">Trusted phone number</label>
+                        <input class="mdui-textfield-input" type="tel" data-key="trusted_phone_number">
+                    </div>
+                    <div>
+                        <label class="mdui-switch">
+                            <input type="checkbox" data-key="battery_monitoring_switch">
+                            <i class="mdui-switch-icon"></i>Monitor battery level change
+                      </label>
+                    </div>
+                    <div>
+                        <label class="mdui-switch">
+                            <input type="checkbox" data-key="charger_status">
+                            <i class="mdui-switch-icon"></i>Monitor charger status
+                      </label>
+                    </div>
+                    <div>
+                        <label class="mdui-switch">
+                            <input type="checkbox" data-key="chat_command">
+                            <i class="mdui-switch-icon"></i>Response to chat command
+                      </label>
+                    </div>
+                    <div>
+                        <label class="mdui-switch">
+                            <input type="checkbox" data-key="fallback_sms">
+                            <i class="mdui-switch-icon"></i>Forward SMS to trusted number when network unavailable
+                      </label>
+                    </div>
+                    <div>
+                        <label class="mdui-switch">
+                            <input type="checkbox" data-key="privacy_mode">
+                            <i class="mdui-switch-icon"></i>Respond only to commands containing the Bot username
+                      </label>
+                    </div>
+                    <div>
+                        <label class="mdui-switch">
+                            <input type="checkbox" data-key="verification_code">
+                            <i class="mdui-switch-icon"></i>Verification code automatic extraction (Alpha)
+                      </label>
+                    </div>
+                    <div class="submit-btn-outer"><button class="mdui-btn mdui-color-blue-700 mdui-ripple" type="submit">Generate QR Code</button></div>
+                </form>
+                <!-- <input type="text" id="user-content" placeholder="Paste your Bot Token here..."><input type="button" id="user-click" value="Generate"> -->
             </div>
             <div id="qrcode-placeholder">Your generated QR Code will be displayed here</div>
             <div id="qrcode-container"></div>
         </section>
         <section class="info">
-            <div class="markdown-body">
-                <p>This is a tool to help you generate a QR code with a Bot Token in your browser. You can use Telegram SMS to scan this QR code, which will allow you to quickly enter your Bot Token.</p>
+            <div class="mdui-typo">
+                <p>This is a tool to help you generate a QR code with Telegram SMS configuration in your browser. You can use Telegram SMS to scan this QR code, which will allow you to quickly apply your configuration.</p>
                 <h2>Important Notice</h2>
                 <p>This tool is purely frontend-based, which won't upload any data into our server. You 
-                    can get source code <a href="https://github.com/telegram-sms/qrcode.reall.uk" target="_blank">here</a>.</p>
+                    can get source code <a href="https://github.com/telegram-sms/qrcode.telegram-sms.com" target="_blank">here</a>.</p>
                 <h2>Acknowledgements</h2>
-                <p><a href="https://davidshimjs.github.io/qrcodejs/" target="_blank">QRCode.js</a></p>
+                <p><a href="https://github.com/neocotic/qrious" target="_blank">QRious</a></p>
             </div>
         </section>
     </div>
     <!-- <footer>&copy; 2019</footer> -->
-    <script src="https://cdn.jsdelivr.net/gh/telegram-sms/qrcodejs/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mdui@1.0.0/dist/js/mdui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
     <script>
-        const userContent = document.getElementById('user-content');
-        const userClick = document.getElementById('user-click');
+        const qrInfo = document.getElementById('qr-info');
         const userPH = document.getElementById('qrcode-placeholder');
         const userCT = document.getElementById('qrcode-container');
-        const qrcode = new QRCode(document.getElementById('qrcode-container'), {
-            text: "",
-            colorDark : "#000000",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.H,
-        });
-        userClick.addEventListener('click', () => {
+        qrInfo.addEventListener('submit', (e) => {
+            e.preventDefault();
             userCT.style.display = 'block';
             userPH.style.display = 'none';
-            qrcode.clear();
-            qrcode.makeCode(userContent.value);
+            const inputs = qrInfo.querySelectorAll('input[data-key]');
+            const content = {};
+            inputs.forEach((e) => {
+                if (e.type === 'checkbox') {
+                    content[e.dataset.key] = !!e.checked;
+                    return;
+                }
+                content[e.dataset.key] = e.value;
+            });
+            const value = JSON.stringify(content);
+            const element = document.createElement('canvas');
+            const qr = new QRious({
+                element,
+                value,
+                size: 512,
+            });
+            userCT.innerHTML = '';
+            userCT.appendChild(element);
         });
     </script>
 </body>
