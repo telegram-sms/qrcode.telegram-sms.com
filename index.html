@@ -93,7 +93,7 @@ footer {
                     </div>
                     <div class="mdui-textfield">
                         <label class="mdui-textfield-label">Chat ID</label>
-                        <input class="mdui-textfield-input" type="text" data-key="chat_id">
+                        <input class="mdui-textfield-input" type="text" data-key="chat_id" id="chat-id">
                     </div>
                     <div class="mdui-textfield">
                         <label class="mdui-textfield-label">Trusted phone number</label>
@@ -123,7 +123,7 @@ footer {
                             <i class="mdui-switch-icon"></i>Forward SMS to trusted number when network unavailable
                       </label>
                     </div>
-                    <div>
+                    <div id="item-privacy-mode" style="display: none">
                         <label class="mdui-switch">
                             <input type="checkbox" data-key="privacy_mode">
                             <i class="mdui-switch-icon"></i>Respond only to commands containing the Bot username
@@ -160,6 +160,15 @@ footer {
         const qrInfo = document.getElementById('qr-info');
         const userPH = document.getElementById('qrcode-placeholder');
         const userCT = document.getElementById('qrcode-container');
+        const chatID = document.getElementById('chat-id');
+        const ipm = document.getElementById('item-privacy-mode');
+        chatID.addEventListener('change', () => {
+            if (Number(chatID.value) < 0) {
+                ipm.style.display = 'block';
+            } else {
+                ipm.style.display = 'none';
+            }
+        });
         qrInfo.addEventListener('submit', (e) => {
             e.preventDefault();
             userCT.style.display = 'block';
@@ -173,6 +182,9 @@ footer {
                 }
                 content[e.dataset.key] = e.value;
             });
+            if (ipm.style.display === 'none') {
+                content.privacy_mode = false;
+            }
             const value = JSON.stringify(content);
             const element = document.createElement('canvas');
             const qr = new QRious({
