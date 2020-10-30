@@ -71,6 +71,13 @@ body {
 .container > .info {
     padding: 1em 0;
 }
+#chatid-selector > .mdui-dialog-content {
+    padding-bottom: 8px;
+}
+#chatid-list {
+    margin: 0 -16px;
+    padding: 0;
+}
 footer {
     text-align: center;
     padding: .5em;
@@ -156,6 +163,16 @@ footer {
             </div>
         </section>
     </div>
+    <div class="mdui-dialog" id="chatid-selector">
+        <div class="mdui-dialog-content">
+            <div class="mdui-dialog-title">Select a chat</div>
+            <ul class="mdui-list" id="chatid-list">
+                <!-- <li class="mdui-list-item mdui-ripple">Inbox</li>
+                <li class="mdui-list-item mdui-ripple">Starred</li>
+                <li class="mdui-list-item mdui-ripple">Send mail</li> -->
+            </ul>
+        </div>
+    </div>
     <!-- <footer>&copy; 2019</footer> -->
     <script src="https://cdn.jsdelivr.net/npm/mdui@1.0.0/dist/js/mdui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
@@ -167,13 +184,75 @@ footer {
         const botToken = document.getElementById('bot-token');
         const getChatID = document.getElementById('get-chat-id');
         const ipm = document.getElementById('item-privacy-mode');
-        chatID.addEventListener('change', () => {
+        const chatIDSelector = new mdui.Dialog('#chatid-selector', {});
+
+        function updateIPM() {
             if (Number(chatID.value) < 0) {
                 ipm.style.display = 'block';
             } else {
                 ipm.style.display = 'none';
             }
+        }
+
+        function setChatIDEvent(e) {
+            chatID.value = e.target.dataset.chatId;
+            updateIPM();
+            mdui.snackbar({
+                message: 'Setting chat ID to ' + chatID.value,
+            });
+            chatIDSelector.close();
+        }
+
+        function fetchChatList(message) {
+            // https://github.com/telegram-sms/telegram-sms/blob/master/app/src/main/java/com/qwe7002/telegram_sms/main_activity.java#L285
+            // (JavaScript ver.)
+            const chat_name_list = [];
+            const chat_id_list = [];
+            const chat_list = message.result;
+            for (let i = 0; i < chat_list.length; i++) {
+                const item_obj = chat_list[i];
+                if (item_obj.message) {
+                    const message_obj = item_obj.message;
+                    const chat_obj = message_obj.chat;
+                    if (!chat_id_list.includes(chat_obj.id)) {
+                        let username = "";
+                        if (chat_obj.username) {
+                            username = chat_obj.username;
+                        }
+                        if (chat_obj.title) {
+                            username = chat_obj.title;
+                        }
+                        if (username === '' && !chat_obj.username) {
+                            if (chat_obj.first_name) {
+                                username = chat_obj.first_name;
+                            }
+                            if (chat_obj.last_name) {
+                                username += " " + chat_obj.last_name;
+                            }
+                        }
+                        chat_name_list.push(username + " (" + chat_obj.type + ")");
+                        chat_id_list.push(chat_obj.id);
+                    }
+                }
+                if (item_obj.channel_post) {
+                    const message_obj = item_obj.channel_post;
+                    const chat_obj = message_obj.chat;
+                    if (!chat_id_list.includes(chat_obj.id)) {
+                        chat_name_list.push(chat_obj.title + " (Channel)");
+                        chat_id_list.push(chat_obj.id);
+                    }
+                }
+            }
+            return {
+                chat_name_list,
+                chat_id_list,
+            }
+        }
+
+        chatID.addEventListener('change', () => {
+            updateIPM();
         });
+
         getChatID.addEventListener('click', async (e) => {
             try {
                 getChatID.disabled = 'disabled';
@@ -182,18 +261,22 @@ footer {
                 if (!result.ok) {
                     throw new Error('Server returned ' + result.status);
                 }
+
                 const message = await result.json();
-                if (message.ok) {
-                    const recentID = message.result[message.result.length - 1].message.chat.id;
-                    chatID.value = recentID;
-                    mdui.snackbar({
-                        message: 'Success',
-                    });
-                } else {
-                    mdui.snackbar({
-                        message: 'No messages found. Maybe try to send a message to your bot first?',
-                    });
+                const { chat_name_list, chat_id_list } = fetchChatList(message);
+
+                // Construct chat selector dialog
+                const chatIDList = document.getElementById('chatid-list');
+                chatIDList.innerHTML = '';
+                for (let i = 0; i < chat_id_list.length; i++) {
+                    const item = document.createElement('li');
+                    item.className = 'mdui-list-item mdui-ripple';
+                    item.dataset.chatId = chat_id_list[i];
+                    item.textContent = chat_name_list[i];
+                    item.addEventListener('click', setChatIDEvent);
+                    chatIDList.appendChild(item);
                 }
+                chatIDSelector.open();
             } catch (e) {
                 mdui.snackbar({
                     message: 'Unable to get recent chat ID: ' + e,
@@ -202,6 +285,7 @@ footer {
             getChatID.disabled = '';
             getChatID.textContent = 'Get recent chat ID';
         });
+
         qrInfo.addEventListener('submit', (e) => {
             e.preventDefault();
             userCT.style.display = 'block';
