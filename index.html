@@ -89,7 +89,7 @@ footer {
                 <form id="qr-info">
                     <div class="mdui-textfield">
                         <label class="mdui-textfield-label">Bot Token</label>
-                        <input class="mdui-textfield-input" type="text" data-key="bot_token">
+                        <input class="mdui-textfield-input" type="text" data-key="bot_token" id="bot-token">
                     </div>
                     <div class="mdui-textfield">
                         <label class="mdui-textfield-label">Chat ID</label>
@@ -135,7 +135,10 @@ footer {
                             <i class="mdui-switch-icon"></i>Verification code automatic extraction (Alpha)
                       </label>
                     </div>
-                    <div class="submit-btn-outer"><button class="mdui-btn mdui-color-blue-700 mdui-ripple" type="submit">Generate QR Code</button></div>
+                    <div class="submit-btn-outer">
+                        <button class="mdui-btn mdui-color-blue-700 mdui-ripple" type="submit">Generate QR Code</button>
+                        <button class="mdui-btn mdui-color-cyan-700 mdui-ripple" type="button" id="get-chat-id">Get recent chat ID</button>
+                    </div>
                 </form>
                 <!-- <input type="text" id="user-content" placeholder="Paste your Bot Token here..."><input type="button" id="user-click" value="Generate"> -->
             </div>
@@ -161,6 +164,8 @@ footer {
         const userPH = document.getElementById('qrcode-placeholder');
         const userCT = document.getElementById('qrcode-container');
         const chatID = document.getElementById('chat-id');
+        const botToken = document.getElementById('bot-token');
+        const getChatID = document.getElementById('get-chat-id');
         const ipm = document.getElementById('item-privacy-mode');
         chatID.addEventListener('change', () => {
             if (Number(chatID.value) < 0) {
@@ -168,6 +173,34 @@ footer {
             } else {
                 ipm.style.display = 'none';
             }
+        });
+        getChatID.addEventListener('click', async (e) => {
+            try {
+                getChatID.disabled = 'disabled';
+                getChatID.textContent = 'Please wait...';
+                const result = await fetch(`https://api.telegram.org/bot${botToken.value}/getUpdates`);
+                if (!result.ok) {
+                    throw new Error('Server returned ' + result.status);
+                }
+                const message = await result.json();
+                if (message.ok) {
+                    const recentID = message.result[message.result.length - 1].message.chat.id;
+                    chatID.value = recentID;
+                    mdui.snackbar({
+                        message: 'Success',
+                    });
+                } else {
+                    mdui.snackbar({
+                        message: 'No messages found. Maybe try to send a message to your bot first?',
+                    });
+                }
+            } catch (e) {
+                mdui.snackbar({
+                    message: 'Unable to get recent chat ID: ' + e,
+                });
+            }
+            getChatID.disabled = '';
+            getChatID.textContent = 'Get recent chat ID';
         });
         qrInfo.addEventListener('submit', (e) => {
             e.preventDefault();
