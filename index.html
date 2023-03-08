@@ -126,11 +126,13 @@
                 <form id="qr-info">
                     <div class="mdui-textfield">
                         <label class="mdui-textfield-label">Bot Token</label>
-                        <input class="mdui-textfield-input" type="text" data-key="bot_token" id="bot-token">
+                        <input class="mdui-textfield-input" type="text" data-key="bot_token" id="bot-token" required>
+                        <div class="mdui-textfield-error">Please input Bot Token</div>
                     </div>
                     <div class="mdui-textfield">
                         <label class="mdui-textfield-label">Chat ID</label>
-                        <input class="mdui-textfield-input" type="text" data-key="chat_id" id="chat-id">
+                        <input class="mdui-textfield-input" type="text" data-key="chat_id" id="chat-id" required>
+                        <div class="mdui-textfield-error">Please input Chat ID</div>
                     </div>
                     <div class="mdui-textfield">
                         <label class="mdui-textfield-label">Trusted phone number</label>
@@ -341,6 +343,9 @@
 
         qrInfo.addEventListener('submit', (e) => {
             e.preventDefault();
+            if (!qrInfo.checkValidity()) {
+                return;
+            }
             userCT.style.display = 'block';
             userPH.style.display = 'none';
             const inputs = qrInfo.querySelectorAll('input[data-key]');
