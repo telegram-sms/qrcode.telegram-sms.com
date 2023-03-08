@@ -190,8 +190,17 @@
             </ul>
         </div>
     </div>
+
+    <!-- No chat ID Dialog -->
+    <div class="mdui-dialog" id="chatid-none">
+        <div class="mdui-dialog-title">Info</div>
+        <div class="mdui-dialog-content">No chat ID found. Please ensure your message is sent.</div>
+        <div class="mdui-dialog-actions">
+          <button class="mdui-btn mdui-ripple" mdui-dialog-close>OK</button>
+        </div>
+      </div>
     <!-- <footer>&copy; 2019</footer> -->
-    <script src="https://cdn.jsdelivr.net/npm/mdui@1.0.0/dist/js/mdui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mdui@1.0.2/dist/js/mdui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
     <script>
         const qrInfo = document.getElementById('qr-info');
@@ -202,6 +211,7 @@
         const getChatID = document.getElementById('get-chat-id');
         const ipm = document.getElementById('item-privacy-mode');
         const chatIDSelector = new mdui.Dialog('#chatid-selector', {});
+        const chatIDNone = new mdui.Dialog("#chatid-none", {});
 
         function updateIPM() {
             if (Number(chatID.value) < 0) {
@@ -280,6 +290,15 @@
                 }
 
                 const message = await result.json();
+
+                // When no chat ID found
+                if (message.result.length <= 0) {
+                    chatIDNone.open();
+                    getChatID.disabled = '';
+                    getChatID.textContent = 'Get recent chat ID';
+                    return;
+                }
+
                 const { chat_name_list, chat_id_list } = fetchChatList(message);
 
                 // Construct chat selector dialog
