@@ -9,7 +9,7 @@
     <style type="text/css">
         body {
             margin: 1em;
-            background-color: #403d4a;
+            background-color: #5D576B;
             background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 268 268' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.08' fill-rule='evenodd'%3E%3Ccircle cx='37' cy='37' r='36'/%3E%3Ccircle cx='171' cy='171' r='36'/%3E%3C/g%3E%3C/svg%3E");
             background-attachment: fixed;
             font-family: "lucida grande", "lucida sans unicode", "Helvetica Neue", Tahoma, "PingFang SC", "Hiragino Sans GB", "Source Han Sans CN Normal", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif
@@ -29,12 +29,24 @@
             box-shadow: rgba(0, 0, 0, .12) .25em .25em 1em .25em;
         }
 
+        @media (prefers-color-scheme: dark) {
+            .container {
+                background-color: #222;
+            }
+        }
+
         .container>header {
             text-align: center;
             padding: 1em 0;
             line-height: 2.2em;
             box-sizing: border-box;
             border-bottom: 2px dashed #ddd;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .container>header {
+                border-bottom: 2px dashed #444;
+            }
         }
 
         .container>header>h1 {
@@ -45,6 +57,12 @@
         .container>.generate {
             padding: 1em 0;
             border-bottom: 2px dashed #ddd;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .container>.generate {
+                border-bottom: 2px dashed #444;
+            }
         }
 
         .generate .mdui-textfield {
@@ -63,6 +81,12 @@
             margin-top: 1em;
             text-align: center;
             color: rgba(0, 0, 0, 0.5);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .container>.generate>div#qrcode-placeholder {
+                color: rgba(255, 255, 255, 0.5);
+            }
         }
 
         .container>.generate>#qrcode-container {
@@ -89,17 +113,10 @@
             margin: 0 -16px;
             padding: 0;
         }
-
-        footer {
-            text-align: center;
-            padding: .5em;
-            font-size: .875em;
-            color: rgba(0, 0, 0, .4);
-        }
     </style>
 </head>
 
-<body class="mdui-theme-primary-teal mdui-theme-accent-deep-orange">
+<body class="mdui-theme-primary-teal mdui-theme-accent-deep-orange mdui-theme-layout-auto">
     <div class="container">
         <header>
             <h1>Telegram SMS Config Generator</h1>
@@ -196,10 +213,10 @@
         <div class="mdui-dialog-title">Info</div>
         <div class="mdui-dialog-content">No chat ID found. Please ensure your message is sent.</div>
         <div class="mdui-dialog-actions">
-          <button class="mdui-btn mdui-ripple" mdui-dialog-close>OK</button>
+            <button class="mdui-btn mdui-ripple" mdui-dialog-close>OK</button>
         </div>
-      </div>
-    <!-- <footer>&copy; 2019</footer> -->
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/mdui@1.0.2/dist/js/mdui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
     <script>
