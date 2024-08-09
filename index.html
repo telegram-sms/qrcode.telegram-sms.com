@@ -12,7 +12,7 @@
             background-color: #5D576B;
             background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 268 268' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.08' fill-rule='evenodd'%3E%3Ccircle cx='37' cy='37' r='36'/%3E%3Ccircle cx='171' cy='171' r='36'/%3E%3C/g%3E%3C/svg%3E");
             background-attachment: fixed;
-            font-family: "lucida grande", "lucida sans unicode", "Helvetica Neue", Tahoma, "PingFang SC", "Hiragino Sans GB", "Source Han Sans CN Normal", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif
+            font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         }
 
         #file-receiver {
@@ -141,6 +141,11 @@
                         <input class="mdui-textfield-input" type="text" data-key="chat_id" id="chat-id" required>
                         <div class="mdui-textfield-error">Please input Chat ID</div>
                     </div>
+                    <div class="mdui-textfield" id="group-id-field" style="display: none">
+                        <label class="mdui-textfield-label">Group ID</label>
+                        <input class="mdui-textfield-input" type="text" data-key="group_id" id="group-id" required>
+                        <div class="mdui-textfield-error">Please input Group ID</div>
+                    </div>
                     <div class="mdui-textfield">
                         <label class="mdui-textfield-label">Trusted phone number</label>
                         <input class="mdui-textfield-input" type="tel" data-key="trusted_phone_number">
@@ -169,7 +174,7 @@
                             <i class="mdui-switch-icon"></i>Forward SMS to trusted number when network unavailable
                         </label>
                     </div>
-                    <div id="item-privacy-mode" style="display: none">
+                    <div id="privacy-mode-field" style="display: none">
                         <label class="mdui-switch">
                             <input type="checkbox" data-key="privacy_mode">
                             <i class="mdui-switch-icon"></i>Respond only to commands containing the Bot username
@@ -235,15 +240,20 @@
         const chatID = document.getElementById('chat-id');
         const botToken = document.getElementById('bot-token');
         const getChatID = document.getElementById('get-chat-id');
-        const ipm = document.getElementById('item-privacy-mode');
+
+        const ipm = document.getElementById('privacy-mode-field');
+        const gid = document.getElementById('group-id-field');
+
         const chatIDSelector = new mdui.Dialog('#chatid-selector', {});
         const chatIDNone = new mdui.Dialog("#chatid-none", {});
 
         function updateIPM() {
             if (Number(chatID.value) < 0) {
                 ipm.style.display = 'block';
+                gid.style.display = 'block';
             } else {
                 ipm.style.display = 'none';
+                gid.style.display = 'none';
             }
         }
 
