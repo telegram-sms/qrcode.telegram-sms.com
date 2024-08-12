@@ -141,10 +141,10 @@
                         <input class="mdui-textfield-input" type="text" data-key="chat_id" id="chat-id" required>
                         <div class="mdui-textfield-error">Please input Chat ID</div>
                     </div>
-                    <div class="mdui-textfield" id="group-id-field" style="display: none">
-                        <label class="mdui-textfield-label">Group ID</label>
-                        <input class="mdui-textfield-input" type="text" data-key="group_id" id="group-id" required>
-                        <div class="mdui-textfield-error">Please input Group ID</div>
+                    <div class="mdui-textfield" id="topic-id-field" style="display: none">
+                        <label class="mdui-textfield-label">Topic ID</label>
+                        <input class="mdui-textfield-input" type="text" data-key="topic_id" id="topic_id" required>
+                        <div class="mdui-textfield-error">Please input Topic ID</div>
                     </div>
                     <div class="mdui-textfield">
                         <label class="mdui-textfield-label">Trusted phone number</label>
@@ -243,7 +243,7 @@
         const getChatID = document.getElementById('get-chat-id');
 
         const ipm = document.getElementById('privacy-mode-field');
-        const gid = document.getElementById('group-id-field');
+        const gid = document.getElementById('topic-id-field');
 
         const chatIDSelector = new mdui.Dialog('#chatid-selector', {});
         const chatIDNone = new mdui.Dialog("#chatid-none", {});
