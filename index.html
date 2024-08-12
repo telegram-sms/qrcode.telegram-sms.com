@@ -238,6 +238,7 @@
         const userPH = document.getElementById('qrcode-placeholder');
         const userCT = document.getElementById('qrcode-container');
         const chatID = document.getElementById('chat-id');
+        const chatThreadId = document.getElementById('group-id');
         const botToken = document.getElementById('bot-token');
         const getChatID = document.getElementById('get-chat-id');
 
@@ -259,6 +260,7 @@
 
         function setChatIDEvent(e) {
             chatID.value = e.target.dataset.chatId;
+            chatThreadId.value = e.target.dataset.chatThreadId;
             updateIPM();
             mdui.snackbar({
                 message: 'Setting chat ID to ' + chatID.value,
@@ -271,6 +273,7 @@
             // (JavaScript ver.)
             const chat_name_list = [];
             const chat_id_list = [];
+            const chat_thread_id_list = [];
             const chat_list = message.result;
             for (let i = 0; i < chat_list.length; i++) {
                 const item_obj = chat_list[i];
@@ -295,6 +298,7 @@
                         }
                         chat_name_list.push(username + " (" + chat_obj.type + ")");
                         chat_id_list.push(chat_obj.id);
+                        chat_thread_id_list.push("");
                     }
                 }
                 if (item_obj.channel_post) {
@@ -303,12 +307,14 @@
                     if (!chat_id_list.includes(chat_obj.id)) {
                         chat_name_list.push(chat_obj.title + " (Channel)");
                         chat_id_list.push(chat_obj.id);
+                        chat_thread_id_list.push(message_obj.message_thread_id);
                     }
                 }
             }
             return {
                 chat_name_list,
                 chat_id_list,
+                chat_thread_id_list,
             }
         }
 
@@ -335,7 +341,7 @@
                     return;
                 }
 
-                const { chat_name_list, chat_id_list } = fetchChatList(message);
+                const { chat_name_list, chat_id_list, chat_thread_id_list } = fetchChatList(message);
 
                 // Construct chat selector dialog
                 const chatIDList = document.getElementById('chatid-list');
@@ -344,6 +350,7 @@
                     const item = document.createElement('li');
                     item.className = 'mdui-list-item mdui-ripple';
                     item.dataset.chatId = chat_id_list[i];
+                    item.dataset.chatThreadId = chat_thread_id_list[i];
                     item.textContent = chat_name_list[i];
                     item.addEventListener('click', setChatIDEvent);
                     chatIDList.appendChild(item);
